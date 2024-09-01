@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Webcam Capture and Classification</title>
+    <style>
+        body {
+            background-color: indigo
+        }
+
+        .box {
+            display: flex;
+            background-color: cornflowerblue;
+            justify-content:space-evenly;
+            height: 83vh;
+            margin: 20px 40px 5px 40px;
+            border-radius: 20px;
+        }
+
+        .left{
+            margin-top: 10px;
+            background-color: blue;
+            width: 500px;
+            height: 515px;
+        }
+
+        .right{
+            margin-top: 10px;
+            background-color: blue;
+            width: 700px;
+            height: 515px;
+        }
+        .inleft{
+            margin-top: 50px;
+        }
+        #webcamFeed{
+        margin-right: 20px;
+        margin-left: 30px;
+        width: 600px;
+        height: 450px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Ticket Dispension through Webcam Feed</h1>
+    <section class = "box">
+    <div class="right">
+        <h3>Live Feed</h3>
+        <img src="{{ url_for('video_feed') }}" alt="Webcam Feed" id="webcamFeed">
+    </div>
+    <div class="left">
+        <h3>Captured Image</h3>
+        <img src="" alt="Captured Image" id="capturedImage">
+        <div class="inleft">
+            <button id="captureBtn">Capture</button>
+            <button id="classifyBtn">Classify</button>
+            <p id="result"></p>
+        </div>
+
+    </div>
+    
+    </section>
+    <br>
+    
+    <script>
+        document.getElementById('captureBtn').addEventListener('click', function() {
+            fetch('/capture', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('capturedImage').src = '/' + data + '?' + new Date().getTime();
+                });
+        });
+
+        document.getElementById('classifyBtn').addEventListener('click', function() {
+            fetch('/classify', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = 'Prediction: ' + data.result;
+                });
+        });
+    </script>
+    </body>
+</html>
